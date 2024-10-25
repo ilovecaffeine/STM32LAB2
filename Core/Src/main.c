@@ -208,14 +208,17 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, EN0_Pin|EN1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, DOT_Pin|EN0_Pin|EN1_Pin|EN2_Pin
+                          |EN3_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SEG_0_Pin|SEG_1_Pin|SEG_2_Pin|SEG_3_Pin
                           |SEG_4_Pin|SEG_5_Pin|SEG_6_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : EN0_Pin EN1_Pin */
-  GPIO_InitStruct.Pin = EN0_Pin|EN1_Pin;
+  /*Configure GPIO pins : DOT_Pin EN0_Pin EN1_Pin EN2_Pin
+                           EN3_Pin */
+  GPIO_InitStruct.Pin = DOT_Pin|EN0_Pin|EN1_Pin|EN2_Pin
+                          |EN3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -345,26 +348,66 @@ void off_all_SEG(void) {
     }
   }
 
+// Function to turn on a specific LED and turn off the rest
+void turnonlyLED(int index) {
+    // Turn off all LEDs first
+    HAL_GPIO_WritePin(GPIOA, EN0_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOA, EN1_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOA, EN2_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOA, EN3_Pin, GPIO_PIN_SET);
+
+    // Turn on the specified LED based on the index
+    switch (index) {
+        case 0:
+            HAL_GPIO_WritePin(GPIOA, EN0_Pin, GPIO_PIN_RESET);
+            break;
+        case 1:
+            HAL_GPIO_WritePin(GPIOA, EN1_Pin, GPIO_PIN_RESET);
+            break;
+        case 2:
+            HAL_GPIO_WritePin(GPIOA, EN2_Pin, GPIO_PIN_RESET);
+            break;
+        case 3:
+            HAL_GPIO_WritePin(GPIOA, EN3_Pin, GPIO_PIN_RESET);
+            break;
+        default:
+            // Handle invalid index
+            break;
+    }
+}
+
 // Timer callback function
-  int counter=0;
-  void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-//      static int counter = 0;
 
-	  	  if (counter == 50) {
-          HAL_GPIO_WritePin(GPIOA, EN0_Pin, GPIO_PIN_RESET);
-          HAL_GPIO_WritePin(GPIOA, EN1_Pin, GPIO_PIN_SET);
-          display7SEG(1);
-      } else if (counter == 100) {
-          HAL_GPIO_WritePin(GPIOA, EN1_Pin, GPIO_PIN_RESET);
-          HAL_GPIO_WritePin(GPIOA, EN0_Pin, GPIO_PIN_SET);
-          display7SEG(2);
-      }
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    static int counter = 50;
+    // static int ledState = 0;
 
-      counter++;
-      if (counter > 100) {
-          counter = 0;
-      }
-  }
+
+    if (counter == 50) {
+        display7SEG(1);
+        turnonlyLED(0);
+    } else if (counter == 100) {
+        display7SEG(2);
+        turnonlyLED(1);
+    } else if (counter == 150) {
+        display7SEG(3);
+        turnonlyLED(2);
+    } else if (counter == 200) {
+        display7SEG(0);
+        turnonlyLED(3);
+    }
+
+    // Blink two LEDs every second
+    if (counter == 50 || counter == 150) {
+        HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
+        // HAL_GPIO_WritePin(GPIOA, DOT_Pin, ledState ? GPIO_PIN_SET : GPIO_PIN_RESET);
+        // ledState = !ledState;
+    }
+    counter++;
+    if (counter > 200) {
+        counter = 0;
+    }
+}
 // if(counter <= 0){
 // 			counter = 100;
 // 			HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, SET);
