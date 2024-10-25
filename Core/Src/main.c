@@ -43,7 +43,7 @@
 TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
-
+int led_buffer[4] = {1, 2, 3, 4};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,12 +96,37 @@ HAL_TIM_Base_Start_IT(&htim2);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+int hour = 15, minute = 8, second = 50;
+void updateClockBuffer()
+{
+    // Update hàng chục và hàng đơn vị của giờ
+    led_buffer[0] = hour / 10;  // Lấy chữ số hàng chục của giờ
+    led_buffer[1] = hour % 10;  // Lấy chữ số hàng đơn vị của giờ
 
+    // Update hàng chục và hàng đơn vị của phút
+    led_buffer[2] = minute / 10;  // Lấy chữ số hàng chục của phút
+    led_buffer[3] = minute % 10;  // Lấy chữ số hàng đơn vị của phút
+}
 
 while (1)
   {
-
-
+    second++;
+    if (second >= 60)
+    {
+      second = 0;
+      minute++;
+    }
+    if (minute >= 60)
+    {
+      minute = 0;
+      hour++;
+    }
+    if (hour >= 24)
+    {
+      hour = 0;
+    }
+    updateClockBuffer();
+    HAL_Delay(1000);
 
     /* USER CODE END WHILE */
 
@@ -376,7 +401,8 @@ void off_all_SEG(void) {
               break;
       }
   }
-  int led_buffer[4] = {1, 2, 3, 4};
+
+
   void update7SEG(int index) {
       switch (index) {
           case 0:
@@ -425,7 +451,6 @@ void off_all_SEG(void) {
           HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
           counter = 0;
           }
-
 }
 
 
