@@ -376,25 +376,55 @@ void turnonlyLED(int index) {
     }
 }
 
-// Timer callback function
+int led_buffer[4] = {1, 2, 3, 4};
+void update7SEG(int index) {
+    switch (index) {
+        case 0:
+            // Display the first 7SEG with led_buffer[0]
+            display7SEG(led_buffer[0]);
+            turnonlyLED(0);
+            break;
+        case 1:
+            // Display the second 7SEG with led_buffer[1]
+            display7SEG(led_buffer[1]);
+            turnonlyLED(1);
+            break;
+        case 2:
+            // Display the third 7SEG with led_buffer[2]
+            display7SEG(led_buffer[2]);
+            turnonlyLED(2);
+            break;
+        case 3:
+            // Display the fourth 7SEG with led_buffer[3]
+            display7SEG(led_buffer[3]);
+            turnonlyLED(3);
+            break;
+        default:
+            break;
+    }
+}
 
+const int MAX_LED = 4;
+int index_led = 0;
+
+// Timer callback function
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     static int counter = 50;
     // static int ledState = 0;
 
 
     if (counter == 50) {
-        display7SEG(1);
-        turnonlyLED(0);
+    update7SEG(index_led);
+    index_led = (index_led + 1) % MAX_LED;
     } else if (counter == 100) {
-        display7SEG(2);
-        turnonlyLED(1);
+    update7SEG(index_led);
+    index_led = (index_led + 1) % MAX_LED;
     } else if (counter == 150) {
-        display7SEG(3);
-        turnonlyLED(2);
+    update7SEG(index_led);
+    index_led = (index_led + 1) % MAX_LED;
     } else if (counter == 200) {
-        display7SEG(0);
-        turnonlyLED(3);
+    update7SEG(index_led);
+    index_led = (index_led + 1) % MAX_LED;
     }
 
     // Blink two LEDs every second
