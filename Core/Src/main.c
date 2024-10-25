@@ -209,7 +209,18 @@ void updateLEDMatrix(int index) {
   }
 }
 
+void shiftLeft() {
+    // Store the first element as it will be shifted to the last position
+    uint8_t firstElement = matrix_buffer[0];
 
+    // Shift all elements to the left
+    for (int i = 0; i < 7; i++) {
+        matrix_buffer[i] = matrix_buffer[i + 1];
+    }
+
+    // Move the first element to the last position
+    matrix_buffer[7] = firstElement;
+}
 
 
 
@@ -220,28 +231,11 @@ while (1)
 
     if(timer0_flag == 1){
     setTimer0(10); //set counter() and reset timer0_flag
-      // second++;
-      // if (second >= 60)
-      // {
-      //   second = 0;
-      //   minute++;
-      // }
-      // if (minute >= 60)
-      // {
-      //   minute = 0;
-      //   hour++;
-      // }
-      // if (hour >= 24)
-      // {
-      //   hour = 0;
-      // }
-      // updateClockBuffer();
 
-      updateLEDMatrix(index_led_matrix);
-      index_led_matrix = (index_led_matrix + 1) % MAX_LED_MATRIX;
+    updateLEDMatrix(index_led_matrix);
+    if (index_led_matrix == 7) shiftLeft();
+    index_led_matrix = (index_led_matrix + 1) % MAX_LED_MATRIX;
 
-      // // Blink two LEDs every second
-      // HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
 
 
 

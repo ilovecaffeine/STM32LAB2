@@ -1,9 +1,10 @@
 ../Core/Src/main.c:106:6:controlLEDs	9
-../Core/Src/main.c:68:5:main	2
+../Core/Src/main.c:68:5:main	3
 ../Core/Src/main.c:164:6:offAllMatrixLED	1
 ../Core/Src/main.c:169:6:updateLEDMatrix	9
-../Core/Src/main.c:260:6:SystemClock_Config	3
-../Core/Src/main.c:297:13:MX_TIM2_Init	4
-../Core/Src/main.c:342:13:MX_GPIO_Init	1
-../Core/Src/main.c:402:6:HAL_TIM_PeriodElapsedCallback	1
-../Core/Src/main.c:420:6:Error_Handler	1
+../Core/Src/main.c:212:6:shiftLeft	2
+../Core/Src/main.c:254:6:SystemClock_Config	3
+../Core/Src/main.c:291:13:MX_TIM2_Init	4
+../Core/Src/main.c:336:13:MX_GPIO_Init	1
+../Core/Src/main.c:396:6:HAL_TIM_PeriodElapsedCallback	1
+../Core/Src/main.c:414:6:Error_Handler	1
