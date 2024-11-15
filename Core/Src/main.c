@@ -301,7 +301,7 @@ while (1)
       {
         hour = 0;
       }
-
+      HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
     }
     updateClockBuffer();
 
@@ -310,11 +310,13 @@ while (1)
       update7SEG(index_led);
       index_led = (index_led + 1) % MAX_LED;
       }
-      if(timer2_flag == 1){
-        setTimer2(1000);
-      // Blink two LEDs every second
-      HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
-      }
+
+
+//      if(timer2_flag == 1){
+//        setTimer2(1000);
+//
+//
+//      }
 
 
     /* USER CODE END WHILE */
